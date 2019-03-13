@@ -1,0 +1,35 @@
+        Platform.runLater(new Runnable() {
+            public void run() { 
+                chartFxPanel.setScene(new Scene(createBarChart())); 
+            } 
+        });
+
+
+private BarChart createBarChart() {
+    CategoryAxis xAxis = new CategoryAxis();
+    xAxis.setLabel("Bus");
+    
+    NumberAxis yAxis = new NumberAxis();
+    yAxis.setLabel("People");
+    
+    final BarChart chart = new BarChart(xAxis, yAxis, tableModel.getBarChartData());
+    
+    tableModel.addTableModelListener(new TableModelListener() {
+        public void tableChanged(TableModelEvent e) {
+            if (e.getType() == TableModelEvent.UPDATE) {
+                final int row = e.getFirstRow();
+                final int column = e.getColumn();
+                final Object value = ((SimpleTModel)e.getSource()).getValueAt(row, column);
+
+                Platform.runLater(new Runnable() {
+                    public void run() {
+                        XYChart.Series<String, Number> s =
+                        (XYChart.Series<String, Number>) chart.getData().get(row);
+                        BarChart.Data data = s.getData().get(column);
+                        data.setYValue(value);
+                    }
+                });
+            }
+        }});
+    return chart;
+}

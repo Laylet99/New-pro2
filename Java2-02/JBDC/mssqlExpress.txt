@@ -1,0 +1,52 @@
+1.Загрузить Microsoft JDBC Driver 6.0 for SQL Server(Type 4)
+	https://www.microsoft.com/en-us/download/details.aspx?id=11774
+  Распакуйте архив. Для подклюцения драйвера Вам нужен файл: sqljdbc42.jar
+
+2.Загрузите sql-server-2016-express 
+	https://download.microsoft.com/download/9/0/7/907AD35F-9F9C-43A5-9789-						52470555DB90/ENU/SQLEXPR_x64_ENU.exe
+
+3.Запустить файл SQLEXPR_x64_ENU.exe 
+  После распаковки архива и запукса инсталятора выбираем первый пункт:New SQL Server stand-alone     installation.
+	Убедитесь, что на шаге выбора имени Instance Name=SQLExpress
+	Режим аутентификации ставите Mixed Mode и password=1234
+
+4.Скачайте AdventureWorksDB.msi 
+	http://msftdbprodsamples.codeplex.com/releases/view/4004
+	Разверните архив в каталог C:\Users\Public\sql
+
+5.Выполните подключенит базы (см. сайт)
+	https://technet.microsoft.com/ru-ru/library/ms165673(v=sql.105).aspx
+
+cmd.exe
+sqlcmd -S localhost\SQLExpress
+
+CREATE DATABASE AdventureWorks ON 
+ (FILENAME='C:\Users\Public\sql\AdventureWorks_Data.mdf'),
+ (FILENAME='C:\Users\Public\sql\AdventureWorks_Log.ldf') 
+FOR ATTACH;
+go 
+
+select name from sys.databases
+go
+
+use AdventureWorks
+go
+
+select top 10 FirstName from Person.Contact
+go
+
+6. Для программного обращения к базе данных должны быть запущены службы: SQL Server Browser, 
+   SQL Server(SQLExpress). Должно быть дано разрешение на доступ к SQLExpress по протоколу TCP/IP.
+   Все эти настройки удобно делать из Sql Server Configuration Manager см.
+https://docs.microsoft.com/en-us/sql/relational-databases/lesson-2-connecting-from-another-computer
+
+7. Код подключения из Java:
+	       	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+              	String url="jdbc:sqlserver://localhost\\SQLExpress;database=AdventureWorks";
+       		Connection con=DriverManager.getConnection(url,"sa","1234");
+
+
+
+
+
+
